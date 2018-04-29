@@ -1,0 +1,174 @@
+ID3 Init: cols = 5 rows = 14 dataset 0x609e80
+Columns labels:
+Label   0 = outlook
+Label   1 = temp
+Label   2 = humi
+Label   3 = wind
+Label   4 = play
+Root node @ 0x122e640:
+	winvalue        : -1
+	tot_samples     : 14
+	samples         :  0  1  2  3  4  5  6  7  8  9 10 11 12 13 
+	tot_attrib      : 4 (1 1 1 1 )
+	tot_nodes       : 0
+	nodes           @ (nil)
+Current node @ 0x122e640:
+	winvalue        : -1
+	tot_samples     : 14
+	samples         : 0  1  2  3  4  5  6  7  8  9  10 11 12 13 
+	tot_attrib      : 4 (1 1 1 1 )
+	tot_nodes       : 0
+	nodes           @ (nil)
+Entropy set = 0.940286
+	Calcolo entropia per ogni attributo ( tot. disponibili 4 )
+	Info Gain per attributo 0 = 0.247
+	Info Gain per attributo 1 = 0.029
+	Info Gain per attributo 2 = 0.152
+	Info Gain per attributo 3 = 0.048
+	L'attributo 0 ha il massimo IG (0.247) e 3 tipi di valori
+	Allocazione memoria per 3 nodi @ 0x122e8a0
+		Impostazione nodo per valore 0 dell'attributo 0
+			node_ptr = 0x122e8a0 ( j = 0 )
+			node_ptr->winvalue    : 0
+			node_ptr->tot_samples : 5
+			node_ptr->samples     : 0x122e7d0
+Current node @ 0x122e8a0:
+	winvalue        : 0
+	tot_samples     : 5
+	samples         : 0  1  7  8  10 
+	tot_attrib      : 4 (0 1 1 1 )
+	tot_nodes       : 0
+	nodes           @ (nil)
+Entropy set = 0.970951
+	Calcolo entropia per ogni attributo ( tot. disponibili 3 )
+	Info Gain per attributo 1 = 0.571
+	Info Gain per attributo 2 = 0.971
+	Info Gain per attributo 3 = 0.020
+	L'attributo 2 ha il massimo IG (0.971) e 2 tipi di valori
+	Allocazione memoria per 2 nodi @ 0x122ea60
+		Impostazione nodo per valore 2 dell'attributo 2
+			node_ptr = 0x122ea60 ( j = 0 )
+			node_ptr->winvalue    : 2
+			node_ptr->tot_samples : 3
+			node_ptr->samples     : 0x122e950
+Current node @ 0x122ea60:
+	winvalue        : 2
+	tot_samples     : 3
+	samples         : 0  1  7  
+	tot_attrib      : 4 (0 1 0 1 )
+	tot_nodes       : 0
+	nodes           @ (nil)
+Entropy set = 0.000000
+			Nodo Terminale @ 0x122e860:
+			winvalue        : 4
+			tot_samples     : 0
+			tot_attrib      : 0
+			tot_nodes       : 0
+			nodes           @ (nil)
+		Impostazione nodo per valore 11 dell'attributo 2
+			node_ptr = 0x122ea98 ( j = 1 )
+			node_ptr->winvalue    : 11
+			node_ptr->tot_samples : 2
+			node_ptr->samples     : 0x122e9b0
+Current node @ 0x122ea98:
+	winvalue        : 11
+	tot_samples     : 2
+	samples         : 8  10 
+	tot_attrib      : 4 (0 1 0 1 )
+	tot_nodes       : 0
+	nodes           @ (nil)
+Entropy set = 0.000000
+			Nodo Terminale @ 0x122eae0:
+			winvalue        : 7
+			tot_samples     : 0
+			tot_attrib      : 0
+			tot_nodes       : 0
+			nodes           @ (nil)
+		Impostazione nodo per valore 6 dell'attributo 0
+			node_ptr = 0x122e8d8 ( j = 1 )
+			node_ptr->winvalue    : 6
+			node_ptr->tot_samples : 4
+			node_ptr->samples     : 0x122e830
+Current node @ 0x122e8d8:
+	winvalue        : 6
+	tot_samples     : 4
+	samples         : 2  6  11 12 
+	tot_attrib      : 4 (0 1 1 1 )
+	tot_nodes       : 0
+	nodes           @ (nil)
+Entropy set = 0.000000
+			Nodo Terminale @ 0x122eb40:
+			winvalue        : 7
+			tot_samples     : 0
+			tot_attrib      : 0
+			tot_nodes       : 0
+			nodes           @ (nil)
+		Impostazione nodo per valore 8 dell'attributo 0
+			node_ptr = 0x122e910 ( j = 2 )
+			node_ptr->winvalue    : 8
+			node_ptr->tot_samples : 5
+			node_ptr->samples     : 0x122eba0
+Current node @ 0x122e910:
+	winvalue        : 8
+	tot_samples     : 5
+	samples         : 3  4  5  9  13 
+	tot_attrib      : 4 (0 1 1 1 )
+	tot_nodes       : 0
+	nodes           @ (nil)
+Entropy set = 0.970951
+	Calcolo entropia per ogni attributo ( tot. disponibili 3 )
+	Info Gain per attributo 1 = 0.020
+	Info Gain per attributo 2 = 0.020
+	Info Gain per attributo 3 = 0.971
+	L'attributo 3 ha il massimo IG (0.971) e 2 tipi di valori
+	Allocazione memoria per 2 nodi @ 0x122ed00
+		Impostazione nodo per valore 3 dell'attributo 3
+			node_ptr = 0x122ed00 ( j = 0 )
+			node_ptr->winvalue    : 3
+			node_ptr->tot_samples : 3
+			node_ptr->samples     : 0x122e760
+Current node @ 0x122ed00:
+	winvalue        : 3
+	tot_samples     : 3
+	samples         : 3  4  9  
+	tot_attrib      : 4 (0 1 1 0 )
+	tot_nodes       : 0
+	nodes           @ (nil)
+Entropy set = 0.000000
+			Nodo Terminale @ 0x122ecc0:
+			winvalue        : 7
+			tot_samples     : 0
+			tot_attrib      : 0
+			tot_nodes       : 0
+			nodes           @ (nil)
+		Impostazione nodo per valore 5 dell'attributo 3
+			node_ptr = 0x122ed38 ( j = 1 )
+			node_ptr->winvalue    : 5
+			node_ptr->tot_samples : 2
+			node_ptr->samples     : 0x122eb80
+Current node @ 0x122ed38:
+	winvalue        : 5
+	tot_samples     : 2
+	samples         : 5  13 
+	tot_attrib      : 4 (0 1 1 0 )
+	tot_nodes       : 0
+	nodes           @ (nil)
+Entropy set = 0.000000
+			Nodo Terminale @ 0x122ed80:
+			winvalue        : 4
+			tot_samples     : 0
+			tot_attrib      : 0
+			tot_nodes       : 0
+			nodes           @ (nil)
+Regole trovate:
+
+Classe NO
+		IF outlook = SUNNY AND IF humi = HIGH 
+IF outlook = RAIN AND IF wind = STRONG 
+
+Classe YES
+		IF outlook = SUNNY AND IF humi = NORMAL 
+IF outlook = OVERCAST 
+IF outlook = RAIN AND IF wind = WEAK 
+
+Esito: 0
