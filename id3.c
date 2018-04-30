@@ -1,5 +1,3 @@
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -97,6 +95,7 @@ void explain_rules( node_t *node, long cols, struct dsinfo_t *info, char **title
 	temp_path 		= malloc( sizeof( long ) * maxdepth );
 
 	printf( "Regole trovate:\n\n");
+
 	while( infoptr->next != NULL )
 	{
 		if( infoptr->column == ( cols - 1 ) )
@@ -151,7 +150,8 @@ void explain_rules( node_t *node, long cols, struct dsinfo_t *info, char **title
 							}
 							infoptr2 = infoptr2->next;
 						}
-						printf( "IF %s = %s ", *( titles + attrb_id ), attrb_name );
+						//printf( "IF %s = %s ", *( titles + attrb_id ), attrb_name );
+						printf(" %s ",attrb_name);
 						if( *( rules_table + i*maxdepth + j+1 ) >= 0 )
 							printf( "AND " );
 						else
@@ -163,6 +163,7 @@ void explain_rules( node_t *node, long cols, struct dsinfo_t *info, char **title
 
 		}
 		infoptr = infoptr->next;
+
 	}
 
 	free( temp_path );
@@ -634,7 +635,8 @@ int id3tree_create( char **data, long cols, long rows, ... )
 		va_start( llistptr, rows );
 		do {
 			label = va_arg( llistptr, int );
-			if( label != NULL ) totlabels += 1;
+			if( label != NULL ) 
+				totlabels += 1;
 		} while( label != NULL );
 		va_end( llistptr );
 
@@ -651,16 +653,15 @@ int id3tree_create( char **data, long cols, long rows, ... )
 		for( i = 0; i < totlabels; i++ )
 		{
 			label 	= va_arg( llistptr, int );
+
 			*ctptr 	= label;
 			++ctptr;
 		}
 		va_end( llistptr );
 
-		DEBUG( "Columns labels:\n" );
+		DEBUG( "Columns labels(%d):\n",totlabels);
 		for( i = 0; i < totlabels; i++ )
-			DEBUG( "Label %3d = %s\n", i, cols_titles[ i ] );
-
-
+			DEBUG( "Label %d = %s\n", i, cols_titles[ i ] );
 		// Essendo la comparazione di valori long piu' veloce rispetto alla
 		// comparazione di stringhe l'intero data set costituito da stringhe viene
 		// convertito assegnando un indice univoco ad ogni stringa
@@ -816,6 +817,7 @@ int id3tree_create( char **data, long cols, long rows, ... )
 
 		// spiegazione delle regole
 		explain_rules( root, cols, infolist, cols_titles, tree_max_depth, tree_max_rules );
+
 
 	} while( 0 );
 

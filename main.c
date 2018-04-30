@@ -661,7 +661,7 @@ int main()
 
     /*result = id3tree_create( 	dataset,			// puntatore al database
 								5,					// totale colonne ( attributi + classi )
-								600,					// totale samples nel database
+								120,					// totale samples nel database
 								"sex",			// etichetta per attributo 1
 								"region",		// etichetta per attributo 2
 								"married",			// etichetta per attributo 3
@@ -687,7 +687,7 @@ int main()
 							"astigmatic",			
 							"tearRate",	
 							NULL				// terminatore
-						);			*/		
+						);*/				
     printf( "Esito: %d\n", result );
 
 
