@@ -6,11 +6,9 @@
 
 #include "id3.h"
 
-
-
 /*
 	Prima scansione dell'albero di decisione per raccoglioere
-	info riguardo alla profondita' massima dei rami e al numero
+	info riguardo alla profondita' massima dei rami e al number
 	massimo di regole create
 */
 void scantree( node_t *node, long *max_depth, long *max_rules  )
@@ -22,11 +20,13 @@ void scantree( node_t *node, long *max_depth, long *max_rules  )
 	{
 		depth += 1;
 
-		// memorizza la profondita' max dei rami
-		if( depth > *max_depth ) *max_depth = depth;
+		// store the depth' max of branches
+		if( depth > *max_depth )
+			*max_depth = depth;
 
-		// memorizza il numero max di regole trovate
-		if( node->tot_nodes == 0 ) *max_rules += 1;
+		// store the number max of rules found
+		if( node->tot_nodes == 0 )
+			*max_rules += 1;
 
 		j = 0;
 		while( j < node->tot_nodes )
@@ -41,7 +41,7 @@ void scantree( node_t *node, long *max_depth, long *max_rules  )
 
 /*
 	Seconda scansione dell'albero di decisioni per la raccolta delle
-	regole per ogni classe
+	regole per every classe
 */
 void scanrules( node_t *node, long class_id, long *depth, long *path, long maxdepth, long *table, long *tid )
 {
@@ -54,7 +54,7 @@ void scanrules( node_t *node, long class_id, long *depth, long *path, long maxde
 		// aggiorno il path corrente
 		*( path + ( *depth - 1 ) ) = node->winvalue;
 
-		// e' l'utlimo nodo foglia del ramo
+		// e' l'utlimo Node foglia del ramo
 		if( node->tot_nodes == 0 && node->winvalue == class_id )
 		{
 			for( i = 0; i < *(depth)-1; i++ )
@@ -94,13 +94,12 @@ void explain_rules( node_t *node, long cols, struct dsinfo_t *info, char **title
 	rules_table 	= malloc( rulestable_sz );
 	temp_path 		= malloc( sizeof( long ) * maxdepth );
 
-	printf( "Regole trovate:\n\n");
-
+	printf( "Rules found:\n\n");
 	while( infoptr->next != NULL )
 	{
 		if( infoptr->column == ( cols - 1 ) )
 		{
-			printf( "Classe %s\n", infoptr->name );
+			printf( "Class %s\n", infoptr->name );
 
 			i = 0;
 			while( i < ( maxdepth * maxrules ) )
@@ -150,12 +149,11 @@ void explain_rules( node_t *node, long cols, struct dsinfo_t *info, char **title
 							}
 							infoptr2 = infoptr2->next;
 						}
-						//printf( "IF %s = %s ", *( titles + attrb_id ), attrb_name );
-						printf(" %s ",attrb_name);
+						printf( "Is %s = %s ", *( titles + attrb_id ), attrb_name );
 						if( *( rules_table + i*maxdepth + j+1 ) >= 0 )
-							printf( "AND " );
+							printf( "and " );
 						else
-							printf( "\n" );
+							printf( "\n\t\t" );
 					}
 				}
 			}
@@ -163,7 +161,6 @@ void explain_rules( node_t *node, long cols, struct dsinfo_t *info, char **title
 
 		}
 		infoptr = infoptr->next;
-
 	}
 
 	free( temp_path );
@@ -171,9 +168,9 @@ void explain_rules( node_t *node, long cols, struct dsinfo_t *info, char **title
 }
 
 /*
-	Calcolo entropia porzione di samples
+	Calculation Entropy porzione di samples
 	- data: 		puntatore all'intero DataBase
-	- cols:			numero di colonne DB (attributi + classi)
+	- cols:			number di colonne DB (attributi + classi)
 	- sample:		vettore contenente gli indici dei samples da analizzare
 	- totsamples:	totale samples da analizzare
 	- info:			informazioni su classi/atttributi
@@ -193,21 +190,21 @@ double calc_entropy_set( long *data, long cols, long *samples, long totsamples, 
 		// quando trovo una classe...
 		if( infoptr->column == ( cols - 1 ) )
 		{
-			// ne calcolo l'entropia sulla porzione di database indicata da samples
+			// ne Calculation l'Entropy sulla porzione di database indicata da samples
 			// samples contiene gli indici dei sample da analizzare percui
-			// data[ samples[ j ]*cols + cols - 1 ] contiene il valore della classe (ultima colonna)
+			// data[ samples[ j ]*cols + cols - 1 ] contiene il Value della classe (ultima colonna)
 			// delle elemento del DB con indice indicato da samples[ j ]
 
 			total = 0;
 			for( j = 0; j < totsamples; j++ )
 				if( data[ samples[ j ]*cols + cols - 1 ] == infoptr->value ) ++total;
 
-			// calcolo il rapporto su cui eseguire la formula
+			// Calculation il rapporto su cui eseguire la formula
 			if( total > 0 && totsamples > 0 )
 			{
 				part	= (double)total / (double)totsamples;
 
-				// sommo all'entropia totale l'entropia per questa classe secondo
+				// sommo all'Entropy totale l'Entropy per questa classe secondo
 				// la formula	Entropy = -p(I) log2( p(I) )
 				entropy += ( -part * log2(part) );
 			}
@@ -221,7 +218,7 @@ double calc_entropy_set( long *data, long cols, long *samples, long totsamples, 
 
 
 /*
-	Calcolo Info gain per un attributo
+	Calculation Info gain per un Attribute
 */
 double calc_attrib_gain( long *data, long cols, long *samples, long totsamples, struct dsinfo_t *info, long attrib )
 {
@@ -251,11 +248,11 @@ double calc_attrib_gain( long *data, long cols, long *samples, long totsamples, 
 	struct gdata_t		*gdata, *gdataptr;
 	struct	vpc_t		*vpcptr;
 
-	// Calcolo totale valori possibili per attributo e classi
+	// Calculation totale valori possibili per Attribute e classi
 	infoptr = info;
 	while( infoptr != NULL )
 	{
-		// conteggio totale valori possibili per l'attributo
+		// conteggio totale valori possibili per l'Attribute
 		if( infoptr->column == attrib ) 		++tot_attribtype;
 		// conteggio totale valori possibili per le classi
 		if( infoptr->column == ( cols - 1 ) ) 	++tot_classtype;
@@ -272,12 +269,12 @@ double calc_attrib_gain( long *data, long cols, long *samples, long totsamples, 
 		infoptr = infoptr->next;
 	}
 
-	// allocazione memoria per le strutture per ogni tipo di valore dell'attributo
+	// allocazione memoria per le strutture per every tipo di Value dell'Attribute
 	size 	= sizeof( struct gdata_t ) * tot_attribtype;
 	gdata 	= malloc( size );
 	memset( gdata, 0, size );
 
-	// inizializzazione struttura per ogni valore dell'attributo
+	// inizializzazione struttura per every Value dell'Attribute
 	i = 0, infoptr = info;
 	while( infoptr != NULL )
 	{
@@ -302,8 +299,8 @@ double calc_attrib_gain( long *data, long cols, long *samples, long totsamples, 
 		infoptr = infoptr->next;
 	}
 
-	// raccolta dati dai samples riguardo al numero di valori per ogni
-	// attributo; per ogni valore viene calcolato inoltre quanti corrispondono
+	// raccolta dati dai samples riguardo al number di valori per every
+	// Attribute; per every Value viene calcolato inoltre quanti corrispondono
 	// a una classe piuttosto che ad un'altra
 	for( i = 0; i < totsamples; i++ )
 	{
@@ -324,7 +321,7 @@ double calc_attrib_gain( long *data, long cols, long *samples, long totsamples, 
 		}
 	}
 
-	// calcolo information gain
+	// Calculation information gain
 	for( i = 0; i < tot_attribtype; i++ )
 	{
 		gdataptr 	= gdata + i;
@@ -359,7 +356,7 @@ double calc_attrib_gain( long *data, long cols, long *samples, long totsamples, 
 }
 
 /*
-	Creazione nodi albero
+	Creazione nodes albero
 */
 void create_leaves( node_t *node, long *data, long cols, long rows, struct dsinfo_t *info )
 {
@@ -401,16 +398,16 @@ void create_leaves( node_t *node, long *data, long cols, long rows, struct dsinf
 	DEBUG( "\tnodes           @ %p\n", node->nodes );
 
 
-	// calcolo entropia della parte di samples da esaminare
+	// Calculation Entropy della parte di samples da esaminare
 	entropy_set = calc_entropy_set( data, cols, node->samples, node->tot_samples, info );
 
 	DEBUG( "Entropy set = %3.6f\n", entropy_set );
-	// Il valore di entropy_set e' fondamentale per proseguire o meno nella crezione
-	// dei rami e dei nodi foglia. Se il suo valore e' 0 significa che gli elementi
-	// esaminati sono prerfettamente classificati, se il suo valore e' significa che
+	// Il Value di entropy_set e' fondamentale per proseguire o meno nella crezione
+	// dei rami e dei nodes foglia. Se il suo Value e' 0 significa che gli elementi
+	// esaminati sono prerfettamente classificati, se il suo Value e' significa che
 	// gli elementi non hanno regole, sono totalmente casuali.
-	// Se invece il valore e' compreso tra 0 e 1 proseguo e calcolo il Gain per ogni
-	// attributo disponibile..
+	// Se invece il Value e' compreso tra 0 e 1 proseguo e Calculation il Gain per every
+	// Attribute disponibile..
 	if( entropy_set == 0.000f )
 	{
 
@@ -425,7 +422,7 @@ void create_leaves( node_t *node, long *data, long cols, long rows, struct dsinf
 		node->nodes->samples		= NULL;
 		node->nodes->nodes			= NULL;
 
-		DEBUG( "\t\t\tNodo Terminale @ %p:\n", node->nodes );
+		DEBUG( "\t\t\tNode Terminal @ %p:\n", node->nodes );
 		DEBUG( "\t\t\twinvalue        : %d\n", node->nodes->winvalue );
 		DEBUG( "\t\t\ttot_samples     : %d\n", node->nodes->tot_samples );
 		DEBUG( "\t\t\ttot_attrib      : %d\n", node->nodes->tot_attrib );
@@ -443,8 +440,8 @@ void create_leaves( node_t *node, long *data, long cols, long rows, struct dsinf
 		for( j = 0; j < ( cols - 1 ); j++ )
 			if( node->avail_attrib[ j ] == 1 ) tot_avattrib += 1;
 
-		DEBUG( "\tCalcolo entropia per ogni attributo ( tot. disponibili %d )\n", tot_avattrib );
-		// se c'e' piu' di un attributo disponibile
+		DEBUG( "\tCalculation Entropy per every Attribute ( tot. Available %d )\n", tot_avattrib );
+		// se c'e' piu' di un Attribute disponibile
 		if( tot_avattrib > 0 )
 		{
 
@@ -457,9 +454,9 @@ void create_leaves( node_t *node, long *data, long cols, long rows, struct dsinf
 				if( node->avail_attrib[ j ] == 1 )
 				{
 					gains[ j ] = entropy_set + calc_attrib_gain( data, cols, node->samples, node->tot_samples, info, j );
-					DEBUG( "\tInfo Gain per attributo %d = %3.3f\n", j, gains[ j ] );
+					DEBUG( "\tInfo Gain per Attribute %d = %3.3f\n", j, gains[ j ] );
 				}
-			// cerca il valore piu' alto...
+			// cerca il Value piu' alto...
 			for( j = 0; j < ( cols - 1 ); j++ )
 				if( gains[ j ] > max_gain )
 				{
@@ -467,7 +464,7 @@ void create_leaves( node_t *node, long *data, long cols, long rows, struct dsinf
 					max_gain_id = j;
 				}
 
-			// calcola il numero massimo possibile di valori per l'attributo vincente
+			// calcola il number massimo possibile di valori per l'Attribute vincente
 			max_attr_values = 0;
 			infoptr 		= info;
 			while( infoptr != NULL )
@@ -475,13 +472,13 @@ void create_leaves( node_t *node, long *data, long cols, long rows, struct dsinf
 				if( infoptr->column == max_gain_id ) ++max_attr_values;
 				infoptr = infoptr->next;
 			}
-			DEBUG( "\tL'attributo %d ha il massimo IG (%3.3f) e %d tipi di valori\n", max_gain_id, max_gain, max_attr_values );
+			DEBUG( "\tL'Attribute %d ha il massimo IG (%3.3f) e %d tipi di valori\n", max_gain_id, max_gain, max_attr_values );
 
-			// crea i nodi per ogni valore possibile dell'attributo
-			// il numero dei nodi e' pari a tutti i valori possibili per l'attributo
+			// crea i nodes per every Value possibile dell'Attribute
+			// il number dei nodes e' pari a tutti i valori possibili per l'Attribute
 			node->nodes 	= ( node_t* ) malloc( sizeof( node_t ) * max_attr_values );
 			node->tot_nodes = max_attr_values;
-			DEBUG( "\tAllocazione memoria per %d nodi @ %p\n", max_attr_values, node->nodes );
+			DEBUG( "\tAllocazione memoria per %d nodes @ %p\n", max_attr_values, node->nodes );
 
 			infoptr 		= info;
 			j = 0;
@@ -489,7 +486,7 @@ void create_leaves( node_t *node, long *data, long cols, long rows, struct dsinf
 			{
 				if( infoptr->column == max_gain_id )
 				{
-					DEBUG( "\t\tImpostazione nodo per valore %d dell'attributo %d\n", infoptr->value, max_gain_id );
+					DEBUG( "\t\tSetting Node per Value %d dell'Attribute %d\n", infoptr->value, max_gain_id );
 
 					node_ptr 	= node->nodes;
 					node_ptr 	+= j;
@@ -497,7 +494,7 @@ void create_leaves( node_t *node, long *data, long cols, long rows, struct dsinf
 
 					tot_new_samples = 0;
 					// cercare nei sample del DB indicati da node->samples tutti
-					// quelli che nella colonna indicata da max_gain_id hanno il valore indicato
+					// quelli che nella colonna indicata da max_gain_id hanno il Value indicato
 					// da infoptr->value, calcolarne il totale e metterlo in tot_samples
 					// creare un vettore della dimensione di tot_samples e assegnarlo a node_ptr->samples
 					for( i = 0; i < node->tot_samples; i++ )
@@ -561,7 +558,7 @@ void create_leaves( node_t *node, long *data, long cols, long rows, struct dsinf
 					DEBUG( "\t\t\tnode_ptr->samples     : %p\n", node_ptr->samples );
 
 
-					// creazione ricorsiva dei nodi foglia
+					// creazione ricorsiva dei nodes foglia
 					if( node_ptr->tot_samples > 0 ) create_leaves( node_ptr, data, cols, rows, info );
 
 
@@ -584,7 +581,7 @@ void create_leaves( node_t *node, long *data, long cols, long rows, struct dsinf
 			node->nodes->samples		= NULL;
 			node->nodes->nodes			= NULL;
 
-			DEBUG( "\t\t\tNodo Terminale @ %p:\n", node->nodes );
+			DEBUG( "\t\t\tNode Terminal @ %p:\n", node->nodes );
 			DEBUG( "\t\t\twinvalue        : %d\n", node->nodes->winvalue );
 			DEBUG( "\t\t\ttot_samples     : %d\n", node->nodes->tot_samples );
 			DEBUG( "\t\t\ttot_attrib      : %d\n", node->nodes->tot_attrib );
@@ -631,12 +628,11 @@ int id3tree_create( char **data, long cols, long rows, ... )
 	do {
 
 		// Riempimento della lista di puntatori a stringa contenenti
-		// le etichette (titoli) per ogni attributo
+		// le etichette (titoli) per every Attribute
 		va_start( llistptr, rows );
 		do {
 			label = va_arg( llistptr, int );
-			if( label != NULL ) 
-				totlabels += 1;
+			if( label != NULL ) totlabels += 1;
 		} while( label != NULL );
 		va_end( llistptr );
 
@@ -647,25 +643,26 @@ int id3tree_create( char **data, long cols, long rows, ... )
 			result = -1;
 			break;
 		}
-		// riempio il vettore con dimensione pari al numero di colonne del database appena creato
+		// riempio il vettore con dimensione pari al number di colonne del database appena creato
 		ctptr = cols_titles;
 		va_start( llistptr, rows );
 		for( i = 0; i < totlabels; i++ )
 		{
 			label 	= va_arg( llistptr, int );
-
 			*ctptr 	= label;
 			++ctptr;
 		}
 		va_end( llistptr );
 
-		DEBUG( "Columns labels(%d):\n",totlabels);
+		DEBUG( "Columns labels:\n" );
 		for( i = 0; i < totlabels; i++ )
-			DEBUG( "Label %d = %s\n", i, cols_titles[ i ] );
+			DEBUG( "Label %3d = %s\n", i, cols_titles[ i ] );
+
+
 		// Essendo la comparazione di valori long piu' veloce rispetto alla
 		// comparazione di stringhe l'intero data set costituito da stringhe viene
-		// convertito assegnando un indice univoco ad ogni stringa
-		// calcolo quantita' di memoria necessaria per tabella di conversione
+		// convertito assegnando un indice univoco ad every stringa
+		// Calculation quantita' di memoria necessaria per tabella di conversione
 		dataset_sz = sizeof( long ) * cols * rows;
 
 		// Allocazione memoria per la conversione stringa->value
@@ -694,7 +691,7 @@ int id3tree_create( char **data, long cols, long rows, ... )
 					infolisterror = 1;
 					break;
 				}
-				// TODO inserire controllo valore infolist
+				// TODO inserire controllo Value infolist
 				insptr		= infolist;
 				prvass		= NULL;
 			}
@@ -753,7 +750,7 @@ int id3tree_create( char **data, long cols, long rows, ... )
 
 
 			// la variabile col tiene conto della colonna corrente all'interno del dataset
-			// in caso di accodamento tiene traccia dell'attributo/classe a cui appartiene l'elemento
+			// in caso di accodamento tiene traccia dell'Attribute/classe a cui appartiene l'elemento
 			if( ++col >= cols ) col = 0;
 			// incremento indice di scorrimento elementi nel dataset
 			i += 1;
@@ -766,7 +763,7 @@ int id3tree_create( char **data, long cols, long rows, ... )
 		}
 
 
-		// creazione del nodo radice: da qui parte la creazione dell'intero albero
+		// creazione del Node radice: da qui parte la creazione dell'intero albero
 		if( ( root = ( node_t* ) malloc( sizeof( node_t ) ) ) == NULL )
 		{
 			result = -4;
@@ -780,7 +777,7 @@ int id3tree_create( char **data, long cols, long rows, ... )
 			result = -5;
 			break;
 		}
-		// il nodo radice contiene gli indici di tutti i samples del database
+		// il Node radice contiene gli indici di tutti i samples del database
 		for( j = 0; j < rows; j++ ) root->samples[ j ] = j;
 
 		// imposto tutti gli attributi possibili ( tutte le colonne meno una, quella delle classi )
@@ -791,10 +788,10 @@ int id3tree_create( char **data, long cols, long rows, ... )
 			result = -6;
 			break;
 		}
-		// al nodo radice tutti gli attributi sono da controllare
+		// al Node radice tutti gli attributi sono da controllare
 		for( j = 0; j < ( cols - 1 ); j++ ) root->avail_attrib[ j ] = 1;
 
-		// valore (-1) che identifica il nodo radice, inoltre il nodo non ha (all'inizio) sotto nodi
+		// Value (-1) che identifica il Node radice, inoltre il Node non ha (all'inizio) sotto nodes
 		root->winvalue		= -1;
 		root->tot_nodes		= 0;
 
@@ -809,15 +806,15 @@ int id3tree_create( char **data, long cols, long rows, ... )
 		DEBUG( "\tnodes           @ %p\n", root->nodes );
 
 
-		// creazione albero e nodi foglia
+		// Creating tree and node leaf
 		create_leaves( root, dataset, cols, rows, infolist );
-
-		// visualizzazione albero
+		
+		// view tree
+		printf("tree_max_depth %d tree_max_rules %d \n",tree_max_depth,tree_max_rules);
 		scantree( root, &tree_max_depth, &tree_max_rules );
 
-		// spiegazione delle regole
+		// Explanation of rules
 		explain_rules( root, cols, infolist, cols_titles, tree_max_depth, tree_max_rules );
-
 
 	} while( 0 );
 
@@ -831,12 +828,10 @@ int id3tree_create( char **data, long cols, long rows, ... )
 		free( insptr );
 		insptr = prvass;
 	}
-	// Libero memoria allocata per la tabella conversione stringa->valore
+	// Libero memoria allocata per la tabella conversione stringa->Value
 	if( dataset != NULL ) 	free( dataset );
 	// Libero memoria allocata per etichette attributi/classi
 	if( cols_titles != NULL ) free( cols_titles );
 
 	return result;
 }
-
-

@@ -5,7 +5,7 @@
 
 char *dataset[] =
 {
-// 	attr 1		attr 2		attr 3		attr 4		classes
+// 	属性 1		属性 2		属性 3		属性 4		classes
 "FEMALE",	   "INNER_CITY",      	"NO ",		"1",	 "NO_CAR ",
 "MALE  ",      "TOWN      ",        "YES",     	"3",     "YES_CAR",
 "FEMALE",      "INNER_CITY",        "YES",     	"0",     "YES_CAR",
@@ -628,67 +628,95 @@ char *dataset_weather[] =
 };
 char *dataset_lenses[] = 
 {
-	"young","myope","no","reduced no lenses",
-	"young","myope","no","normal soft",
-	"young","myope","yes","reduced no lenses",
-	"young","myope","yes","normal hard",
-	"young","hyper","no","reduced no lenses",
-	"young","hyper","no","normal soft",
-	"young","hyper","yes","reduced no lenses",
-	"young","hyper","yes","normal hard",
-	"pre",	"myope","no","reduced no lenses",
-	"pre",	"myope","no","normal soft",
-	"pre",	"myope","yes","reduced no lenses",
-	"pre",	"myope","yes","normal hard",
-	"pre",	"hyper","no","reduced no lenses",
-	"pre",	"hyper","no","normal soft",
-	"pre",	"hyper","yes","reduced no lenses",
-	"pre",	"hyper","yes","normal no lenses",
-	"presbyopic","myope","no","reduced no lenses",
-	"presbyopic","myope","no","normal no lenses",
-	"presbyopic","myope","yes","reduced no lenses",
-	"presbyopic","myope","yes","normal hard",
-	"presbyopic","hyper","no","reduced no lenses",
-	"presbyopic","hyper","no","normal	soft",
-	"presbyopic","hyper","yes","reduced no lenses",
-	"presbyopic","hyper","yes","normal no lenses",
+	"young","myope","no","reduced","no lenses",
+	"young","myope","no","normal","soft",
+	"young","myope","yes","reduced","no lenses",
+	"young","myope","yes","normal","hard",
+	"young","hyper","no","reduced","no lenses",
+	"young","hyper","no","normal","soft",
+	"young","hyper","yes","reduced","no lenses",
+	"young","hyper","yes","normal","hard",
+	"pre",	"myope","no","reduced","no lenses",
+	"pre",	"myope","no","normal","soft",
+	"pre",	"myope","yes","reduced","no lenses",
+	"pre",	"myope","yes","normal","hard",
+	"pre",	"hyper","no","reduced","no lenses",
+	"pre",	"hyper","no","normal","soft",
+	"pre",	"hyper","yes","reduced","no lenses",
+	"pre",	"hyper","yes","normal","no lenses",
+	"presbyopic","myope","no","reduced","no lenses",
+	"presbyopic","myope","no","normal","no lenses",
+	"presbyopic","myope","yes","reduced","no lenses",
+	"presbyopic","myope","yes","normal","hard",
+	"presbyopic","hyper","no","reduced","no lenses",
+	"presbyopic","hyper","no","normal","soft",
+	"presbyopic","hyper","yes","reduced","no lenses",
+	"presbyopic","hyper","yes","normal","no lenses",
 	NULL
 };
+char *dataset_cancer[] = 
+{
+	"5","1","1","1","2","1","3","1","1","2",
+	"5","4","4","5","7","10","3","2","1","2",
+	"3","1","1","1","2","2","3","1","1","2",
+	"6","8","8","1","3","4","3","7","1","2",
+	"4","1","1","3","2","1","3","1","1","2",
+	"8","10","10","8","7","10","9","7","1","4",
+	"5","3","3","3","2","3","4","4","1","4",
+	NULL
+};
+
 int main()
 {
     int result = 0;
 
-
-    /*result = id3tree_create( 	dataset,			// puntatore al database
-								5,					// totale colonne ( attributi + classi )
-								120,					// totale samples nel database
-								"sex",			// etichetta per attributo 1
-								"region",		// etichetta per attributo 2
-								"married",			// etichetta per attributo 3
-								"children",				// etichetta per attributo 4
-								"car",			// etichetta per classi
-								NULL				// terminatore
+    /*result = id3tree_create( 	dataset,			
+								5,					
+								600,			
+								"sex",			
+								"region",		
+								"married",			
+								"children",				
+								"car",			
+								NULL				
 							);*/
-    result = id3tree_create( 	dataset_weather,			// puntatore al database
-								5,					// totale colonne ( attributi + classi )
-								14,					// totale samples nel database
-								"outlook",			// etichetta per attributo 1
-								"temp",		// etichetta per attributo 2
-								"humi",			// etichetta per attributo 3
-								"wind",				// etichetta per attributo 4
-								"play",			// etichetta per classi
-								NULL				// terminatore
-							);
-	/*result = id3tree_create( 	dataset_lenses,		
-							4,					//  cols
+    /*result = id3tree_create( 	dataset_weather,			
+								5,					
+								14,					
+								"outlook",			
+								"temp",		
+								"humi",			
+								"wind",				
+								"play",			
+								NULL
+							);*/
+	result = id3tree_create( 	dataset_lenses,		
+							5,					//  cols
 							24,					// rows
 							"age",			
 							"prescription",		
 							"astigmatic",			
-							"tearRate",	
-							NULL				// terminatore
-						);*/				
-    printf( "Esito: %d\n", result );
+							"tearRate",
+							"Result",
+							NULL				
+						);
+	/*result = id3tree_create( 	dataset_cancer,			
+			10,	//列数
+			7,	//行数	
+			"Clump Thickness",
+			"Uniformity of Cell Size",
+			"Uniformity of Cell Shape",	
+			"Marginal Adhesion",		
+			"Single Epithelial Cell Size",
+			"Bare Nuclei ",
+			"Bland Chromatin",
+			"Normal Nucleoli",
+			"Mitoses",
+			"Result",
+			NULL
+		);	*/
+				
+    printf( "result: %d\n", result );
 
 
     return 0;
