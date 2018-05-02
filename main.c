@@ -680,17 +680,17 @@ int main()
 								"car",			
 								NULL				
 							);*/
-    /*result = id3tree_create( 	dataset_weather,			
+    result = id3tree_create( 	dataset_weather,			
 								5,					
 								14,					
-								"outlook",			
-								"temp",		
-								"humi",			
-								"wind",				
-								"play",			
+								"天气",			
+								"温度",		
+								"湿度",			
+								"风",				
+								"结果",			
 								NULL
-							);*/
-	result = id3tree_create( 	dataset_lenses,		
+							);
+	/*result = id3tree_create( 	dataset_lenses,		
 							5,					//  cols
 							24,					// rows
 							"age",			
@@ -699,7 +699,7 @@ int main()
 							"tearRate",
 							"Result",
 							NULL				
-						);
+						);*/
 	/*result = id3tree_create( 	dataset_cancer,			
 			10,	//列数
 			7,	//行数	

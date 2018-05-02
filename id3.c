@@ -9,7 +9,7 @@
 /*
 	Prima scansione dell'albero di decisione per raccoglioere
 	info riguardo alla profondita' massima dei rami e al number
-	massimo di regole create
+	massimo di Rules create
 */
 void scantree( node_t *node, long *max_depth, long *max_rules  )
 {
@@ -22,12 +22,34 @@ void scantree( node_t *node, long *max_depth, long *max_rules  )
 
 		// store the depth' max of branches
 		if( depth > *max_depth )
+		{
 			*max_depth = depth;
-
+		}
 		// store the number max of rules found
 		if( node->tot_nodes == 0 )
+		{
 			*max_rules += 1;
-
+		}
+		/*
+		printf( "Current node @ %p:\n", node );
+		printf( "\twinvalue        : %d\n", node->winvalue );
+		printf( "\ttot_attrib        : %d\n", node->tot_attrib );
+		if(node->tot_samples > 0)
+		{
+			printf( "\ttot_samples     : %d\n", node->tot_samples );
+			printf( "\tsamples         : " );
+			for( i = 0; i < node->tot_samples; i++ )
+				printf( "%-2d ", node->samples[ i ] );
+		}
+		
+		if(node->tot_attrib > 0)
+		{
+			
+			printf( "\n\ttot_attrib      : %d (%d %d %d %d )\n", node->tot_attrib, node->avail_attrib[0],node->avail_attrib[1],node->avail_attrib[2],node->avail_attrib[3] );
+			
+		}
+		printf( "\ttot_nodes       : %d\n", node->tot_nodes );
+		printf( "\tnodes           @ %p\n\n\n", node->nodes );*/
 		j = 0;
 		while( j < node->tot_nodes )
 		{
@@ -40,8 +62,8 @@ void scantree( node_t *node, long *max_depth, long *max_rules  )
 }
 
 /*
-	Seconda scansione dell'albero di decisioni per la raccolta delle
-	regole per every classe
+	Seconda scansione dell'albero di decisioni per la raccolta of
+	Rules per every classe
 */
 void scanrules( node_t *node, long class_id, long *depth, long *path, long maxdepth, long *table, long *tid )
 {
@@ -73,7 +95,7 @@ void scanrules( node_t *node, long class_id, long *depth, long *path, long maxde
 	}
 }
 /*
-	Estrazione delle regole contenuto nell'albero di decisioni
+	Extraction of Rules content nell'albero di decisioni
 */
 void explain_rules( node_t *node, long cols, struct dsinfo_t *info, char **titles, long maxdepth, long maxrules )
 {
@@ -89,7 +111,7 @@ void explain_rules( node_t *node, long cols, struct dsinfo_t *info, char **title
 	long				depth			= 0;
 	long				i, j, k;
 
-	// allocazione memoria per contenere le regole
+	// allocazione memoria per contenere le Rules
 	rulestable_sz 	= sizeof( long ) * maxdepth * maxrules;
 	rules_table 	= malloc( rulestable_sz );
 	temp_path 		= malloc( sizeof( long ) * maxdepth );
@@ -128,7 +150,7 @@ void explain_rules( node_t *node, long cols, struct dsinfo_t *info, char **title
 								-1 -1 -1 -1
 								-1 -1 -1 -1
 			*/
-			// stampa le regole trovate per la classe corrente
+			// stampa le Rules trovate per la classe corrente
 			printf("\t\t");
 			for( i = 0; i < maxrules; i++ )
 			{
@@ -183,7 +205,7 @@ double calc_entropy_set( long *data, long cols, long *samples, long totsamples, 
 	struct dsinfo_t  	*infoptr	= NULL;
 	long				j;
 
-	// cerco all'interno della infolist gli indici delle classi
+	// cerco all'interno della infolist gli indici of classi
 	infoptr = info;
 	while( infoptr != NULL )
 	{
@@ -193,7 +215,7 @@ double calc_entropy_set( long *data, long cols, long *samples, long totsamples, 
 			// ne Calculation l'Entropy sulla porzione di database indicata da samples
 			// samples contiene gli indici dei sample da analizzare percui
 			// data[ samples[ j ]*cols + cols - 1 ] contiene il Value della classe (ultima colonna)
-			// delle elemento del DB con indice indicato da samples[ j ]
+			// of elemento del DB con indice indicato da samples[ j ]
 
 			total = 0;
 			for( j = 0; j < totsamples; j++ )
@@ -405,7 +427,7 @@ void create_leaves( node_t *node, long *data, long cols, long rows, struct dsinf
 	// Il Value di entropy_set e' fondamentale per proseguire o meno nella crezione
 	// dei rami e dei nodes foglia. Se il suo Value e' 0 significa che gli elementi
 	// esaminati sono prerfettamente classificati, se il suo Value e' significa che
-	// gli elementi non hanno regole, sono totalmente casuali.
+	// gli elementi non hanno Rules, sono totalmente casuali.
 	// Se invece il Value e' compreso tra 0 e 1 proseguo e Calculation il Gain per every
 	// Attribute disponibile..
 	if( entropy_set == 0.000f )
@@ -594,7 +616,7 @@ void create_leaves( node_t *node, long *data, long cols, long rows, struct dsinf
 
 
 /*
-	Creazione regole
+	Creazione Rules
 */
 int id3tree_create( char **data, long cols, long rows, ... )
 {
@@ -677,7 +699,7 @@ int id3tree_create( char **data, long cols, long rows, ... )
 
 		// L'intero data set (in stringa) viene scorso completamente per
 		// recuperare tutte le informazioni necessarie ai calcoli per la creazione
-		// dell'albero delle regole
+		// dell'albero of Rules
 		i = 0, col = 0;
 		while( i < (cols*rows) )
 		{
@@ -780,7 +802,7 @@ int id3tree_create( char **data, long cols, long rows, ... )
 		// il Node radice contiene gli indici di tutti i samples del database
 		for( j = 0; j < rows; j++ ) root->samples[ j ] = j;
 
-		// imposto tutti gli attributi possibili ( tutte le colonne meno una, quella delle classi )
+		// imposto tutti gli attributi possibili ( tutte le colonne meno una, quella of classi )
 		root->tot_attrib = ( cols - 1 );
 		// tutti gli attributi ( cols - 1 ) devono essere presi in considerazione
 		if( ( root->avail_attrib	= malloc( sizeof( long ) * ( cols - 1 ) ) ) == NULL )
@@ -810,9 +832,10 @@ int id3tree_create( char **data, long cols, long rows, ... )
 		create_leaves( root, dataset, cols, rows, infolist );
 		
 		// view tree
-		printf("tree_max_depth %d tree_max_rules %d \n",tree_max_depth,tree_max_rules);
+	
 		scantree( root, &tree_max_depth, &tree_max_rules );
-
+		//print tree
+		printtree(root, cols, infolist, cols_titles, tree_max_depth, tree_max_rules);
 		// Explanation of rules
 		explain_rules( root, cols, infolist, cols_titles, tree_max_depth, tree_max_rules );
 
@@ -834,4 +857,79 @@ int id3tree_create( char **data, long cols, long rows, ... )
 	if( cols_titles != NULL ) free( cols_titles );
 
 	return result;
+}
+void printtree( node_t *node, long cols, struct dsinfo_t *info, char **titles, long maxdepth, long maxrules )
+{
+	struct dsinfo_t 	*infoptr 		= info;
+	struct dsinfo_t 	*infoptr2 		= NULL;
+	long				*rules_table	= NULL;
+	long				tableins_id		= 0;
+	long				rulestable_sz	= 0;
+	long				*temp_path		= NULL;
+	long				attrb			= 0;
+	long				attrb_id		= 0;
+	long				*attrb_name		= 0;
+	long				depth			= 0;
+	long				i, j, k;
+
+	// allocazione memoria per contenere le Rules
+	rulestable_sz 	= sizeof( long ) * maxdepth * maxrules;
+	rules_table 	= malloc( rulestable_sz );
+	temp_path 		= malloc( sizeof( long ) * maxdepth );
+
+	printf( "Rules found infoptr->column:\n\n");
+	while( infoptr->next != NULL )
+	{
+		printf("name %s value %d\n",infoptr->name,infoptr->value);
+		if( infoptr->column == ( cols - 1 ) )
+		{
+			printf( "Class %s\n", infoptr->name );
+
+			i = 0;
+			while( i < ( maxdepth * maxrules ) )
+			{
+				*( rules_table + i ) = -1;
+				++i;
+			}
+
+			for( i = 0; i < maxdepth; i++ )	temp_path[ i ] = -1;
+			depth 		= 0;
+			tableins_id = 0;
+			scanrules( node, infoptr->value, &depth, temp_path, maxdepth, rules_table, &tableins_id );
+
+			for( i = 0; i < maxrules; i++ )
+			{
+				for( j = 0; j < (maxdepth-1); j++ )
+				{
+					attrb 		= *( rules_table + i*maxdepth + j );
+					//if( attrb >= 0 )
+					{
+						attrb_id 	= 0;
+						infoptr2 	= info;
+						while( infoptr2 != NULL )
+						{
+							if( attrb == infoptr2->value )
+							{
+								attrb_id 	= infoptr2->column;
+								attrb_name 	= infoptr2->name;
+								break;
+							}
+							infoptr2 = infoptr2->next;
+						}
+						printf( "show title:%s  name :%s \n", *( titles + attrb_id ), attrb_name );
+						/*if( *( rules_table + i*maxdepth + j+1 ) >= 0 )
+							printf( "and " );
+						else
+							printf( "\n\t\t" );*/
+					}
+				}
+			}
+			printf("\n");
+
+		}
+		infoptr = infoptr->next;
+	}
+
+	free( temp_path );
+	free( rules_table );
 }

@@ -1,6 +1,6 @@
 #pragma once
 
-#define DO_DEBUG
+//#define DO_DEBUG
 
 #ifdef DO_DEBUG
 	#define	DEBUG	printf
@@ -40,6 +40,7 @@ typedef struct node_tag
 //functions declerations 
 int id3tree_create( char **data, long cols, long rows, ... );
 
+void printtree( node_t *node, long cols, struct dsinfo_t *info, char **titles, long maxdepth, long maxrules );
 #ifdef __cplusplus
 }
 #endif
