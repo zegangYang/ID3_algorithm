@@ -58,7 +58,7 @@ include_directories(${OpenCV_INCLUDE_DIRS} ${USER_INCLUDES} ${USER_INCLUDE_DEVIC
 add_executable(
 				ID3
 				main.cpp
-				id3.c
+				id3.cpp
 			  )
 
 # Link your application with OpenCV libraries and other necessary libs(such as :libpthread ... libopengl ... libxxx)

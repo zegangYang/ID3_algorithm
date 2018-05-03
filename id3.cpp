@@ -113,8 +113,8 @@ void explain_rules( node_t *node, long cols, struct dsinfo_t *info, char **title
 
 	// allocazione memoria per contenere le Rules
 	rulestable_sz 	= sizeof( long ) * maxdepth * maxrules;
-	rules_table 	= malloc( rulestable_sz );
-	temp_path 		= malloc( sizeof( long ) * maxdepth );
+	rules_table 	= (long *)malloc( rulestable_sz );
+	temp_path 		= (long *)malloc( sizeof( long ) * maxdepth );
 
 	printf( "Rules found:\n\n");
 	while( infoptr->next != NULL )
@@ -166,7 +166,7 @@ void explain_rules( node_t *node, long cols, struct dsinfo_t *info, char **title
 							if( attrb == infoptr2->value )
 							{
 								attrb_id 	= infoptr2->column;
-								attrb_name 	= infoptr2->name;
+								attrb_name 	= (long *)infoptr2->name;
 								break;
 							}
 							infoptr2 = infoptr2->next;
@@ -283,7 +283,7 @@ double calc_attrib_gain( long *data, long cols, long *samples, long totsamples, 
 	}
 
 	// classlist diventa un vettore contenente tutte le possibili classi
-	classlist = malloc( sizeof( long ) * tot_classtype );
+	classlist = (long *)malloc( sizeof( long ) * tot_classtype );
 	infoptr = info , i = 0;
 	while( infoptr != NULL )
 	{
@@ -293,7 +293,7 @@ double calc_attrib_gain( long *data, long cols, long *samples, long totsamples, 
 
 	// allocazione memoria per le strutture per every tipo di Value dell'Attribute
 	size 	= sizeof( struct gdata_t ) * tot_attribtype;
-	gdata 	= malloc( size );
+	gdata 	= (struct gdata_t *)malloc( size );
 	memset( gdata, 0, size );
 
 	// inizializzazione struttura per every Value dell'Attribute
@@ -307,7 +307,7 @@ double calc_attrib_gain( long *data, long cols, long *samples, long totsamples, 
 			gdataptr->tot_found 	= 0;
 
 			size = sizeof( struct vpc_t ) * tot_classtype;
-			gdataptr->vpc 			= malloc( size );
+			gdataptr->vpc 			= (struct vpc_t *)malloc( size );
 
 			for( j = 0; j < tot_classtype; j++ )
 			{
@@ -433,7 +433,7 @@ void create_leaves( node_t *node, long *data, long cols, long rows, struct dsinf
 	if( entropy_set == 0.000f )
 	{
 
-		node->nodes 				= malloc( sizeof( node_t ) );
+		node->nodes 				= (node_t *)malloc( sizeof( node_t ) );
 		node->tot_nodes				= 1;
 		node->nodes->tot_nodes 		= 0;
 		node->nodes->winvalue 		= data[ node->samples[ 0 ] * cols + cols - 1 ];
@@ -469,7 +469,7 @@ void create_leaves( node_t *node, long *data, long cols, long rows, struct dsinf
 
 			// allocazione memoria per il buffer di dimensione n. attributi
 			// all'interno del buffer
-			gains = malloc( sizeof( double ) * ( cols - 1 ) );
+			gains = (double *)malloc( sizeof( double ) * ( cols - 1 ) );
 			for( i = 0; i < ( cols - 1 ); i++ ) gains[ i ] = 0;
 
 			for( j = 0; j < ( cols - 1 ); j++ )
@@ -525,7 +525,7 @@ void create_leaves( node_t *node, long *data, long cols, long rows, struct dsinf
 						{
 							if( samplelist == NULL )
 							{
-								samplelist 				= malloc( sizeof( struct smplid_t ) );
+								samplelist 				= (struct smplid_t	*)malloc( sizeof( struct smplid_t ) );
 								samplelist->value 		= node->samples[ i ];
 								samplelist->next		= NULL;
 								samplelist->prev		= NULL;
@@ -534,7 +534,7 @@ void create_leaves( node_t *node, long *data, long cols, long rows, struct dsinf
 							{
 								samplelistptr				= samplelist;
 								while( samplelistptr->next != NULL ) samplelistptr = samplelistptr->next;
-								samplelistptr->next			= malloc( sizeof( struct smplid_t ) );
+								samplelistptr->next			= (struct smplid_t *)malloc( sizeof( struct smplid_t ) );
 								samplelistptr->next->prev 	= samplelistptr;
 								samplelistptr 				= samplelistptr->next;
 								samplelistptr->value 		= node->samples[ i ];
@@ -547,7 +547,7 @@ void create_leaves( node_t *node, long *data, long cols, long rows, struct dsinf
 					node_ptr->winvalue		= infoptr->value;
 					node_ptr->tot_nodes 	= 0;
 					node_ptr->tot_samples 	= tot_new_samples;
-					node_ptr->samples		= malloc( sizeof( long ) * tot_new_samples );
+					node_ptr->samples		= (long *)malloc( sizeof( long ) * tot_new_samples );
 					sampleptr				= node_ptr->samples;
 
 					samplelistptr			= samplelist;
@@ -569,7 +569,7 @@ void create_leaves( node_t *node, long *data, long cols, long rows, struct dsinf
 					samplelist = NULL;
 
 					node_ptr->tot_attrib 	= ( cols - 1 );
-					node_ptr->avail_attrib	= malloc( sizeof( long ) * ( cols - 1 ) );
+					node_ptr->avail_attrib	= (long *)malloc( sizeof( long ) * ( cols - 1 ) );
 
 					for( i = 0; i < cols-1; i++ )
 						node_ptr->avail_attrib[ i ] = node->avail_attrib[ i ];
@@ -592,7 +592,7 @@ void create_leaves( node_t *node, long *data, long cols, long rows, struct dsinf
 		}
 		else
 		{
-			node->nodes 				= malloc( sizeof( node_t ) );
+			node->nodes 				= (node_t *)malloc( sizeof( node_t ) );
 			node->tot_nodes				= 1;
 			node->nodes->tot_nodes 		= 0;
 			node->nodes->winvalue 		= data[ node->samples[ 0 ] * cols + cols - 1 ];
@@ -653,12 +653,12 @@ int id3tree_create( char **data, long cols, long rows, ... )
 		// le etichette (titoli) per every Attribute
 		va_start( llistptr, rows );
 		do {
-			label = va_arg( llistptr, int );
+			label = va_arg( llistptr, char* );
 			if( label != NULL ) totlabels += 1;
 		} while( label != NULL );
 		va_end( llistptr );
 
-		cols_titles = malloc( sizeof( char* )*totlabels );
+		cols_titles = (char **)malloc( sizeof( char* )*totlabels );
 		// controllo se posso allocare memoria per le labels
 		if( cols_titles == NULL )
 		{
@@ -670,7 +670,7 @@ int id3tree_create( char **data, long cols, long rows, ... )
 		va_start( llistptr, rows );
 		for( i = 0; i < totlabels; i++ )
 		{
-			label 	= va_arg( llistptr, int );
+			label 	= va_arg( llistptr, char* );
 			*ctptr 	= label;
 			++ctptr;
 		}
@@ -688,7 +688,7 @@ int id3tree_create( char **data, long cols, long rows, ... )
 		dataset_sz = sizeof( long ) * cols * rows;
 
 		// Allocazione memoria per la conversione stringa->value
-		if( ( dataset = malloc( dataset_sz ) ) == NULL )
+		if( ( dataset = (long *)malloc( dataset_sz ) ) == NULL )
 		{
 			result = -2;
 			break;
@@ -707,7 +707,7 @@ int id3tree_create( char **data, long cols, long rows, ... )
 			insptr = NULL;
 			if( infolist == NULL )
 			{
-				infolist 	= malloc( sizeof( struct dsinfo_t ) );
+				infolist 	= (struct dsinfo_t *)malloc( sizeof( struct dsinfo_t ) );
 				if( infolist == NULL )
 				{
 					infolisterror = 1;
@@ -738,7 +738,7 @@ int id3tree_create( char **data, long cols, long rows, ... )
 
 				if( label_found == 0 )
 				{
-					prvptr->next 	= malloc( sizeof( struct dsinfo_t ) );
+					prvptr->next 	= (struct dsinfo_t *)malloc( sizeof( struct dsinfo_t ) );
 					if( prvptr->next == NULL )
 					{
 						infolisterror = 1;
@@ -753,7 +753,7 @@ int id3tree_create( char **data, long cols, long rows, ... )
 			if( insptr != NULL )
 			{
 				assign_id		= string_id;
-				insptr->name 	= malloc( sizeof( char )*strlen( data[ i ] ) + 1 );
+				insptr->name 	= (char *)malloc( sizeof( char )*strlen( data[ i ] ) + 1 );
 				if( insptr->name == NULL )
 				{
 					infolisterror = 1;
@@ -794,7 +794,7 @@ int id3tree_create( char **data, long cols, long rows, ... )
 		// essendo alla radice il set di samples da esaminare e' l'intero albero
 		root->tot_samples	= rows;
 		// creo un vettore contenente gli indici ( da 0 a row - 1 ) di tutti i samples da esaminare
-		if( ( root->samples = malloc( sizeof( long ) * rows ) ) == NULL )
+		if( ( root->samples = (long *)malloc( sizeof( long ) * rows ) ) == NULL )
 		{
 			result = -5;
 			break;
@@ -805,7 +805,7 @@ int id3tree_create( char **data, long cols, long rows, ... )
 		// imposto tutti gli attributi possibili ( tutte le colonne meno una, quella of classi )
 		root->tot_attrib = ( cols - 1 );
 		// tutti gli attributi ( cols - 1 ) devono essere presi in considerazione
-		if( ( root->avail_attrib	= malloc( sizeof( long ) * ( cols - 1 ) ) ) == NULL )
+		if( ( root->avail_attrib	= (long *)malloc( sizeof( long ) * ( cols - 1 ) ) ) == NULL )
 		{
 			result = -6;
 			break;

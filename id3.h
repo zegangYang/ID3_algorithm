@@ -46,3 +46,6 @@ void scantree( node_t *node, long *max_depth, long *max_rules  );
 #ifdef __cplusplus
 }
 #endif
+
+//show tree
+void show_tree(node_t *node);
