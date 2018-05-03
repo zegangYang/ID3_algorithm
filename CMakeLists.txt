@@ -57,7 +57,7 @@ include_directories(${OpenCV_INCLUDE_DIRS} ${USER_INCLUDES} ${USER_INCLUDE_DEVIC
 # Declare the executable target built from your sources
 add_executable(
 				ID3
-				main.c
+				main.cpp
 				id3.c
 			  )
 

@@ -41,6 +41,8 @@ typedef struct node_tag
 int id3tree_create( char **data, long cols, long rows, ... );
 
 void printtree( node_t *node, long cols, struct dsinfo_t *info, char **titles, long maxdepth, long maxrules );
+
+void scantree( node_t *node, long *max_depth, long *max_rules  );
 #ifdef __cplusplus
 }
 #endif

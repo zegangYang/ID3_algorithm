@@ -73,10 +73,10 @@ void scanrules( node_t *node, long class_id, long *depth, long *path, long maxde
 	{
 		*depth += 1;
 
-		// aggiorno il path corrente
+		// update the path current
 		*( path + ( *depth - 1 ) ) = node->winvalue;
 
-		// e' l'utlimo Node foglia del ramo
+		// Is the last Node Leaf branch
 		if( node->tot_nodes == 0 && node->winvalue == class_id )
 		{
 			for( i = 0; i < *(depth)-1; i++ )
@@ -95,7 +95,7 @@ void scanrules( node_t *node, long class_id, long *depth, long *path, long maxde
 	}
 }
 /*
-	Extraction of Rules content nell'albero di decisioni
+	Extraction of Rules content In the decision tree
 */
 void explain_rules( node_t *node, long cols, struct dsinfo_t *info, char **titles, long maxdepth, long maxrules )
 {
@@ -860,76 +860,47 @@ int id3tree_create( char **data, long cols, long rows, ... )
 }
 void printtree( node_t *node, long cols, struct dsinfo_t *info, char **titles, long maxdepth, long maxrules )
 {
-	struct dsinfo_t 	*infoptr 		= info;
-	struct dsinfo_t 	*infoptr2 		= NULL;
-	long				*rules_table	= NULL;
-	long				tableins_id		= 0;
-	long				rulestable_sz	= 0;
-	long				*temp_path		= NULL;
-	long				attrb			= 0;
-	long				attrb_id		= 0;
-	long				*attrb_name		= 0;
-	long				depth			= 0;
-	long				i, j, k;
-
-	// allocazione memoria per contenere le Rules
-	rulestable_sz 	= sizeof( long ) * maxdepth * maxrules;
-	rules_table 	= malloc( rulestable_sz );
-	temp_path 		= malloc( sizeof( long ) * maxdepth );
-
-	printf( "Rules found infoptr->column:\n\n");
-	while( infoptr->next != NULL )
+	struct dsinfo_t *infoptr= info;
+    int j = 0,i;
+    if( node != NULL )
 	{
-		printf("name %s value %d\n",infoptr->name,infoptr->value);
-		if( infoptr->column == ( cols - 1 ) )
+		printf( "Current node @ %p winvalue %d :\n", node, node->winvalue );
+        while( infoptr->next != NULL )
+        {
+            if( infoptr->value == node->winvalue )
+            {
+                printf("%s : %s\n",*(titles+infoptr->column),infoptr->name);
+                break;                
+            }
+            infoptr = infoptr->next;
+        }
+		printf( "\ttot_attrib        : %d\n", node->tot_attrib );
+		/*if(node->tot_samples > 0)
 		{
-			printf( "Class %s\n", infoptr->name );
-
-			i = 0;
-			while( i < ( maxdepth * maxrules ) )
-			{
-				*( rules_table + i ) = -1;
-				++i;
-			}
-
-			for( i = 0; i < maxdepth; i++ )	temp_path[ i ] = -1;
-			depth 		= 0;
-			tableins_id = 0;
-			scanrules( node, infoptr->value, &depth, temp_path, maxdepth, rules_table, &tableins_id );
-
-			for( i = 0; i < maxrules; i++ )
-			{
-				for( j = 0; j < (maxdepth-1); j++ )
-				{
-					attrb 		= *( rules_table + i*maxdepth + j );
-					//if( attrb >= 0 )
-					{
-						attrb_id 	= 0;
-						infoptr2 	= info;
-						while( infoptr2 != NULL )
-						{
-							if( attrb == infoptr2->value )
-							{
-								attrb_id 	= infoptr2->column;
-								attrb_name 	= infoptr2->name;
-								break;
-							}
-							infoptr2 = infoptr2->next;
-						}
-						printf( "show title:%s  name :%s \n", *( titles + attrb_id ), attrb_name );
-						/*if( *( rules_table + i*maxdepth + j+1 ) >= 0 )
-							printf( "and " );
-						else
-							printf( "\n\t\t" );*/
-					}
-				}
-			}
-			printf("\n");
-
+			printf( "\ttot_samples     : %d\n", node->tot_samples );
+			printf( "\tsamples         : " );
+			for( i = 0; i < node->tot_samples; i++ )
+				printf( "%-2d ", node->samples[ i ] );
+		}*/
+		
+		if(node->tot_attrib > 0)
+		{
+			printf( "\n\ttot_attrib      : %d (%d %d %d %d )\n", node->tot_attrib, node->avail_attrib[0],node->avail_attrib[1],node->avail_attrib[2],node->avail_attrib[3]);	
 		}
-		infoptr = infoptr->next;
+		printf( "\ttot_nodes       : %d\n", node->tot_nodes );
+		printf( "\tnodes           @ %p\n\n\n", node->nodes );
+		while( j < node->tot_nodes )
+		{
+            printtree(node->nodes+j,cols,info,titles,maxdepth,maxrules);
+			++j;
+		}
+        /*while( infoptr->next != NULL )
+        {
+            //printf("name %s value %d infoptr->column %d title = %s \n",infoptr->name,infoptr->value,infoptr->column,*(titles+infoptr->column));
+            if( infoptr->column == ( cols - 1 ) )
+            {
+            }
+            infoptr = infoptr->next;
+        }*/
 	}
-
-	free( temp_path );
-	free( rules_table );
 }
