@@ -6,6 +6,15 @@
 
 #include "id3.h"
 
+#include <map>
+#include <iostream>
+#include <queue>
+
+using namespace std;
+
+char data_set_g[DATA_SET_BUFFER_SIZE];
+char *data_set_p_g[DATA_SET_NUM_DEFAULT];
+
 /*
 	Prima scansione dell'albero di decisione per raccoglioere
 	info riguardo alla profondita' massima dei rami e al number
@@ -835,8 +844,9 @@ int id3tree_create( char **data, long cols, long rows, ... )
 	
 		scantree( root, &tree_max_depth, &tree_max_rules );
 		//print tree
-		printtree(root, cols, infolist, cols_titles, tree_max_depth, tree_max_rules);
-		// Explanation of rules
+		printtree(root, cols, infolist, cols_titles, 0, tree_max_rules);
+		//show_tree(root);
+        // Explanation of rules
 		explain_rules( root, cols, infolist, cols_titles, tree_max_depth, tree_max_rules );
 
 	} while( 0 );
@@ -864,35 +874,28 @@ void printtree( node_t *node, long cols, struct dsinfo_t *info, char **titles, l
     int j = 0,i;
     if( node != NULL )
 	{
-		printf( "Current node @ %p winvalue %d :\n", node, node->winvalue );
-        while( infoptr->next != NULL )
+        //#ifdef PRINT_MODE2
+        while( infoptr->next != NULL)
         {
             if( infoptr->value == node->winvalue )
             {
-                printf("%s : %s\n",*(titles+infoptr->column),infoptr->name);
+                printf("%s:",*(titles+infoptr->column));
                 break;                
             }
             infoptr = infoptr->next;
         }
-		printf( "\ttot_attrib        : %d\n", node->tot_attrib );
-		/*if(node->tot_samples > 0)
-		{
-			printf( "\ttot_samples     : %d\n", node->tot_samples );
-			printf( "\tsamples         : " );
-			for( i = 0; i < node->tot_samples; i++ )
-				printf( "%-2d ", node->samples[ i ] );
-		}*/
+        //#endif
 		
-		if(node->tot_attrib > 0)
-		{
-			printf( "\n\ttot_attrib      : %d (%d %d %d %d )\n", node->tot_attrib, node->avail_attrib[0],node->avail_attrib[1],node->avail_attrib[2],node->avail_attrib[3]);	
-		}
-		printf( "\ttot_nodes       : %d\n", node->tot_nodes );
-		printf( "\tnodes           @ %p\n\n\n", node->nodes );
+        #ifdef PRINT_MODE1
+            printf("%d(%s)\n",node->winvalue,infoptr->name);
+        #endif
+            
 		while( j < node->tot_nodes )
 		{
-            printtree(node->nodes+j,cols,info,titles,maxdepth,maxrules);
-			++j;
+            for (int i = 0; i < maxdepth; i++)
+                printf("\t");
+            printtree(node->nodes+j,cols,info,titles,maxdepth+1,maxrules);
+            ++j;
 		}
         /*while( infoptr->next != NULL )
         {
@@ -904,3 +907,125 @@ void printtree( node_t *node, long cols, struct dsinfo_t *info, char **titles, l
         }*/
 	}
 }
+
+map<node_t*, int> indent;
+int pre = 0;
+int index_show = 0;
+int layer = 0;
+map<node_t*,int> m_l;
+map<int, int> judge;
+
+/*
+ * 找出决策树中所有节点儿子最多的个数
+ */
+void get_max_ch_len(node_t* node, int& result)
+{
+    int j=0;
+    if (!node) 
+        return;
+    int ch_len = node->tot_nodes;
+    if (ch_len > result)
+        result = ch_len;
+    while( j < node->tot_nodes)
+    {
+        get_max_ch_len(node->nodes+j, result);
+        j++;
+    }
+}
+void show_tree(node_t *node)
+{
+    if(!node) 
+        return;
+    int j = 0;
+    int max_ch_len = 0;
+    get_max_ch_len(node, max_ch_len);
+    init_tree(node, max_ch_len, 0);
+    queue<node_t*> q;
+    q.push(node);
+    while (!q.empty())
+    {
+        j = 0;
+        auto top = q.front();
+        q.pop();
+        if (!judge[m_l[top]])
+        {
+            judge[m_l[top]] = 1;
+            cout << endl << endl;
+            index_show = 0;
+        }
+        for (; index_show < indent[top]; index_show++) 
+            cout << "  ";
+        if (!top->tot_nodes) 
+            cout << "*";
+        if (top->tot_nodes) 
+            cout << "/";
+        cout << top->winvalue << " ";
+        if (top->tot_nodes) 
+            cout << "\\";
+        if (!top->tot_nodes) 
+            cout << "*";
+        if (top->tot_nodes)
+            cout << "分支:" << " ";
+        //show pri
+        
+        while( j < top->tot_nodes)
+        {
+            q.push(node->nodes+j);
+            j++;
+        }
+        //for (auto node : top->next)
+            //q.push(node);
+    }
+}
+
+void init_tree(node_t* root, int& max_ch_len, int layer)
+{
+    if (!root) 
+        return;
+    int j = 0;
+    m_l[root] = layer;
+    while( j < root->tot_nodes)
+    {
+        init_tree(root->nodes+j,max_ch_len,layer+1);
+        if (!indent[root])
+            indent[root] = pre++;
+        else
+            indent[root]++;
+        j++;
+    }
+    pre += (max_ch_len - root->tot_nodes);
+    if (!indent[root])
+        indent[root] = pre++;
+}
+
+int load_cancer_data(char *path,char **&data,int &rows)
+{
+    FILE *fp = NULL;
+    char *data_buffer = data_set_g;
+    
+    fp = fopen(path,"r");
+    if(!fp)
+        return -1;
+    while(!feof(fp))
+    {
+        int code = 0;
+        int ret  = fscanf(fp,"%d,%d,%s,%s,%s,%s,%s,%s,%s,%s,%s\n",&code,data_buffer,data_buffer+4,data_buffer+8,data_buffer+12,data_buffer+16,
+                                                                        data_buffer+20,data_buffer+24,data_buffer+28,data_buffer+32,data_buffer+36);
+        printf("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s \n");
+        data_buffer += rows*40;
+        rows++;
+    }
+    printf("buffersize %d ptr size %d \n",sizeof(data_set_g),sizeof(data_set_p_g)/sizeof(char *));
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+

@@ -57,8 +57,12 @@ char *dataset_lenses[] =
 
 int main()
 {
+    char **cancer_data = NULL;
+    int rows = 0;
     int result = 0;
 
+    int ret = load_cancer_data("cancer_data.csv",cancer_data,rows);  
+    printf("load data ret %d  rows %d\n",ret,rows);
     result = id3tree_create( 	dataset_weather,			
 								5,					
 								14,					
