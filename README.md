@@ -7,7 +7,7 @@ ID3算法例程。
 **Obtaining source code**
 
 ```shell
-git clone git@github.com:xuchunYang1/ID3_Algorithm.git
+git@github.com:zegangYang/ID3_algorithm.git
 ```
 
 **Build**
