@@ -65,4 +65,4 @@ void get_max_ch_len(node_t* root, int& result);
 
 void init_tree(node_t* root, int& max_ch_len, int layer);
 
-int load_cancer_data(char *path,char **&data,int &cols);
+int load_cancer_data(char *path,int &cols);

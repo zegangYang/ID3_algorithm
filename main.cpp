@@ -54,16 +54,17 @@ char *dataset_lenses[] =
 	"presbyopic","hyper","yes","normal","no lenses",
 	NULL
 };
-
+extern char *data_set_p_g[];
+extern uint32_t data_set_p_index;
 int main()
 {
     char **cancer_data = NULL;
     int rows = 0;
     int result = 0;
 
-    int ret = load_cancer_data("cancer_data.csv",cancer_data,rows);  
-    printf("load data ret %d  rows %d\n",ret,rows);
-    result = id3tree_create( 	dataset_weather,			
+    int ret = load_cancer_data("cancer_data.csv",rows);  
+
+    /*result = id3tree_create( 	dataset_weather,			
 								5,					
 								14,					
 								"天气",			
@@ -71,6 +72,21 @@ int main()
 								"湿度",			
 								"风",				
 								"结果",			
+								NULL
+							);*/
+    result = id3tree_create( 	data_set_p_g,			
+								10,					
+								rows,					
+								"厚度"		
+								"大小",		
+								"附力",			
+								"尺寸",				
+								"结果",
+                                "裸核"		
+								"染色质",		
+								"核仁",			
+								"核分裂",				
+								"Class",
 								NULL
 							);
 	/*result = id3tree_create( 	dataset_lenses,		
@@ -98,7 +114,9 @@ int main()
 			"Result",
 			NULL
 		);	*/
-				
+
+    printf("说明:在每个属性值的基础上加了属性标签!\n");
+    printf("例如：A1、A2、A3代表第一个属性的属性值是1、2、3\n");
     printf( "result: %d\n", result );
 
 
