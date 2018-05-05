@@ -8,6 +8,7 @@
 
 using namespace std;
 
+#define DATA_PATH "test.csv"
 char *dataset_weather[] =
 {
 	"SUNNY",  	"HOT",    	"HIGH",    	"WEAK",		"NO",
@@ -50,7 +51,7 @@ int main()
     int rows = 0;
     int result = 0;
 
-    int ret = load_cancer_data("cancer_data.csv",rows);
+    int ret = load_cancer_data(DATA_PATH,rows);
     result = id3tree_create( 	data_set_p_g,			
 								10,					
 								rows,					

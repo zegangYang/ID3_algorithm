@@ -1,8 +1,9 @@
 #pragma once
 
-#define SAMPLE_WEATHER
-
-//#define SAMPLE_CANCER
+//开启weather代码
+//#define SAMPLE_WEATHER
+//开启癌症例子代码
+#define SAMPLE_CANCER
 
 //#define DO_DEBUG
 //打印数字结果 标签提示一次 好分辨树的层次
