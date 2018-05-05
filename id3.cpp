@@ -14,7 +14,18 @@ using namespace std;
 
 char data_set_g[DATA_SET_BUFFER_SIZE];
 char *data_set_p_g[DATA_SET_NUM_DEFAULT];
+int result_ok_index_g = -1;
+int result_failed_index_g = -1;
 
+#ifdef SAMPLE_WEATHER
+    #define STR_OK "YES"
+    #define STR_FAILED "NO"
+#endif
+
+#ifdef SAMPLE_CANCER
+    #define STR_OK "J2"
+    #define STR_FAILED "J4"
+#endif
 uint32_t data_set_p_index = 0;
 /*
 	Prima scansione dell'albero di decisione per raccoglioere
@@ -842,10 +853,9 @@ int id3tree_create( char **data, long cols, long rows, ... )
 		create_leaves( root, dataset, cols, rows, infolist );
 		
 		// view tree
-	
 		scantree( root, &tree_max_depth, &tree_max_rules );
         
-        printf("max depth %d \n",tree_max_depth);
+        init_show_parameters(root, cols, infolist, cols_titles);
 		//print tree
 		printtree(root, cols, infolist, cols_titles, 0, tree_max_rules);
 		//show_tree(root);
@@ -871,27 +881,86 @@ int id3tree_create( char **data, long cols, long rows, ... )
 
 	return result;
 }
+/*
+ *获取结果的索引 
+ * 方式为遍历生成的决策树
+ *  
+*/
+void init_show_parameters(node_t *node, long cols, struct dsinfo_t *info, char **titles)
+{
+    struct dsinfo_t *infoptr= info;
+    int j = 0;
+    if(result_ok_index_g != -1 && result_failed_index_g != -1)
+        return;
+    if( node != NULL )
+	{
+        while( infoptr->next != NULL)
+        {
+            if( infoptr->value == node->winvalue )
+            {
+                break;                
+            }
+            infoptr = infoptr->next;
+        }
+        if(result_ok_index_g == -1)
+        {
+            if(strcmp(STR_OK,infoptr->name) == 0)
+            {
+                result_ok_index_g = infoptr->value;
+            }
+        }
+        if(result_failed_index_g == -1)
+        {
+            if(strcmp(STR_FAILED,infoptr->name) == 0)
+            {
+                result_failed_index_g = infoptr->value;
+            }
+        }
+        //#endif
+        
+		while( j < node->tot_nodes )
+		{
+            init_show_parameters(node->nodes+j,cols,info,titles);
+            ++j;
+		}
+	}
+}
 void printtree( node_t *node, long cols, struct dsinfo_t *info, char **titles, long maxdepth, long maxrules )
 {
 	struct dsinfo_t *infoptr= info;
     int j = 0,i;
     if( node != NULL )
 	{
-        #ifdef PRINT_MODE2
+        
+       //#ifdef PRINT_MODE2
         while( infoptr->next != NULL)
         {
             if( infoptr->value == node->winvalue )
             {
-                printf("%s:",*(titles+infoptr->column));
+                //printf("%s:",*(titles+infoptr->column));
                 break;                
             }
             infoptr = infoptr->next;
         }
-        #endif
-		
+        //#endif
+        
         #ifdef PRINT_MODE1
-            //printf("%d(%s)\n",node->winvalue,infoptr->name);
-            printf("%d\n",node->winvalue);            
+            
+            //printf("%s(%s)\n",*(titles+infoptr->column),infoptr->name);            
+            //printf("%d\n",node->winvalue);
+            if(node->tot_nodes == 1 && (node->nodes->winvalue == result_ok_index_g || node->nodes->winvalue == result_failed_index_g))
+            {
+                if(node->winvalue >= 0 && node->nodes->winvalue == result_ok_index_g)
+                    printf("%s(%s) :结果:(%s)\n",*(titles+infoptr->column),infoptr->name,STR_OK);
+                else if(node->winvalue >= 0 && node->nodes->winvalue == result_failed_index_g)
+                    printf("%s(%s) :结果:(%s)\n",*(titles+infoptr->column),infoptr->name,STR_FAILED);                    
+                return;
+            }
+            else
+            {
+                if(node->winvalue >= 0)
+                    printf("%s(%s)\n",*(titles+infoptr->column),infoptr->name);
+            }
         #endif
             
 		while( j < node->tot_nodes )

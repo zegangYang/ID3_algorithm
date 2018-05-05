@@ -1,5 +1,9 @@
 #pragma once
 
+#define SAMPLE_WEATHER
+
+//#define SAMPLE_CANCER
+
 //#define DO_DEBUG
 //打印数字结果 标签提示一次 好分辨树的层次
 #define PRINT_MODE1
@@ -51,6 +55,9 @@ void printtree( node_t *node, long cols, struct dsinfo_t *info, char **titles, l
 
 void scantree( node_t *node, long *max_depth, long *max_rules  );
 
+void init_show_parameters(node_t *node, long cols, struct dsinfo_t *info, char **titles);
+
+
 
 #ifdef __cplusplus
 }
@@ -66,3 +73,5 @@ void get_max_ch_len(node_t* root, int& result);
 void init_tree(node_t* root, int& max_ch_len, int layer);
 
 int load_cancer_data(char *path,int &cols);
+
+
