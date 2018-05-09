@@ -211,7 +211,7 @@ void explain_rules( node_t *node, long cols, struct dsinfo_t *info, char **title
 }
 
 /*
-	Calculation Entropy porzione di samples
+	Calculation Entropy Portion di samples
 	- data: 		puntatore all'intero DataBase
 	- cols:			number di colonne DB (attributi + classi)
 	- sample:		vettore contenente gli indici dei samples da analizzare
@@ -432,19 +432,21 @@ void create_leaves( node_t *node, long *data, long cols, long rows, struct dsinf
 
 	DEBUG( "Current node @ %p:\n", node );
 	DEBUG( "\twinvalue        : %d\n", node->winvalue );
-	DEBUG( "\ttot_samples     : %d\n", node->tot_samples );
-	DEBUG( "\tsamples         : " );
-	for( i = 0; i < node->tot_samples; i++ )
-		DEBUG( "%-2d ", node->samples[ i ] );
-	DEBUG( "\n\ttot_attrib      : %d (%d %d %d %d )\n", node->tot_attrib, node->avail_attrib[0],node->avail_attrib[1],node->avail_attrib[2],node->avail_attrib[3] );
-	DEBUG( "\ttot_nodes       : %d\n", node->tot_nodes );
-	DEBUG( "\tnodes           @ %p\n", node->nodes );
+	//DEBUG( "\ttot_samples     : %d\n", node->tot_samples );
+	//DEBUG( "\tsamples         : " );
+	//for( i = 0; i < node->tot_samples; i++ )
+		//DEBUG( "%-2d ", node->samples[ i ] );
+	//DEBUG( "\n\ttot_attrib      : %d (%d %d %d %d )\n", node->tot_attrib, node->avail_attrib[0],node->avail_attrib[1],node->avail_attrib[2],node->avail_attrib[3] );
+	//DEBUG( "\ttot_nodes       : %d\n", node->tot_nodes );
+	//DEBUG( "\tnodes           @ %p\n", node->nodes );
 
 
-	// Calculation Entropy della parte di samples da esaminare
+	// Calculation Entropy of part of samples da Examine
 	entropy_set = calc_entropy_set( data, cols, node->samples, node->tot_samples, info );
 
 	DEBUG( "Entropy set = %3.6f\n", entropy_set );
+    
+    
 	// Il Value di entropy_set e' fondamentale per proseguire o meno nella crezione
 	// dei rami e dei nodes foglia. Se il suo Value e' 0 significa che gli elementi
 	// esaminati sono prerfettamente classificati, se il suo Value e' significa che
@@ -858,6 +860,9 @@ int id3tree_create( char **data, long cols, long rows, ... )
         init_show_parameters(root, cols, infolist, cols_titles);
 		//print tree
 		printtree(root, cols, infolist, cols_titles, 0, tree_max_rules);
+        
+        printf("\n\n\n\n\n winvalue对应的属性以及Titles\n");
+        printAttribute(root, cols, infolist, cols_titles, 0, tree_max_rules);
 		//show_tree(root);
         // Explanation of rules
 		explain_rules( root, cols, infolist, cols_titles, tree_max_depth, tree_max_rules );
@@ -1057,7 +1062,33 @@ int load_cancer_data(char *path,int &rows)
 }
 
 
-
+void printAttribute( node_t *node, long cols, struct dsinfo_t *info, char **titles, long maxdepth, long maxrules )
+{
+    struct dsinfo_t *infoptr= info;
+    int j = 0,i;
+    if( node != NULL )
+	{
+        while( infoptr->next != NULL)
+        {
+            if( infoptr->value == node->winvalue )
+            {
+                break;                
+            }
+            infoptr = infoptr->next;
+        }
+        
+        #ifdef PRINT_MODE1
+            if(node->winvalue >= 0)
+                printf("算法中的value %d  = %s(%s)\n",node->winvalue,*(titles+infoptr->column),infoptr->name);
+        #endif
+            
+		while( j < node->tot_nodes )
+		{
+            printAttribute(node->nodes+j,cols,info,titles,maxdepth+1,maxrules);
+            ++j;
+		}
+	}
+}
 
 
 

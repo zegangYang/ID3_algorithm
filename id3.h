@@ -5,7 +5,7 @@
 //开启癌症例子代码
 #define SAMPLE_CANCER
 
-//#define DO_DEBUG
+#define DO_DEBUG
 //打印数字结果 标签提示一次 好分辨树的层次
 #define PRINT_MODE1
 //打印label结果，格式乱
@@ -53,6 +53,8 @@ typedef struct node_tag
 int id3tree_create( char **data, long cols, long rows, ... );
 
 void printtree( node_t *node, long cols, struct dsinfo_t *info, char **titles, long maxdepth, long maxrules );
+
+void printAttribute( node_t *node, long cols, struct dsinfo_t *info, char **titles, long maxdepth, long maxrules );
 
 void scantree( node_t *node, long *max_depth, long *max_rules  );
 
